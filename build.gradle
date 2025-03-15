@@ -84,7 +84,7 @@ forgix {
         jarLocation = "build/libs/${rootProject.name}-${rootProject.version}.jar"
     }
 
-    quilt {
-        jarLocation = "build/libs/${rootProject.name}-${rootProject.version}.jar"
-    }
+    // quilt {
+    //     jarLocation = "build/libs/${rootProject.name}-${rootProject.version}.jar"
+    // }
 }

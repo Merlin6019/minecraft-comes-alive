@@ -1,5 +1,13 @@
 package net.mca.item;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
+import java.util.UUID;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.mca.ClientProxy;
 import net.mca.Config;
 import net.mca.advancement.criterion.CriterionMCA;
@@ -10,10 +18,10 @@ import net.mca.entity.VillagerLike;
 import net.mca.entity.ai.Memories;
 import net.mca.entity.ai.relationship.AgeState;
 import net.mca.entity.ai.relationship.Gender;
-import net.mca.server.world.data.FamilyTree;
 import net.mca.network.s2c.OpenGuiRequest;
+import net.mca.server.world.data.FamilyTree;
 import net.mca.util.WorldUtils;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,16 +34,12 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Hand;
+import net.minecraft.util.StringHelper;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import static net.minecraft.util.Util.NIL_UUID;
 
 public class BabyItem extends Item {
     private final Gender gender;
@@ -92,16 +96,19 @@ public class BabyItem extends Item {
     }
 
     public static NbtCompound getBabyNbt(ItemStack stack) {
-        NbtCompound nbt = stack.getOrCreateNbt();
-        if (!nbt.contains("baby")) {
-            NbtCompound baby = stack.getOrCreateSubNbt("baby");
+        var itemData = stack.get(DataComponentTypes.CUSTOM_DATA);
+        if (!itemData.contains("baby")) {
+            final UUID NIL_UUID = new UUID(0L, 0L);
+            NbtCompound baby = itemData.copyNbt();
             baby.putUuid("mother", NIL_UUID);
             baby.putUuid("father", NIL_UUID);
+
             baby.putString("motherName", "Unknown");
             baby.putString("fatherName", "Unknown");
             baby.putInt("age", 0);
+            return baby;
         }
-        return stack.getSubNbt("baby");
+        return itemData.copyNbt();
     }
 
     public Gender getGender() {
@@ -245,7 +252,7 @@ public class BabyItem extends Item {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext flag) {
+    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, Item.TooltipContext flag) {
         PlayerEntity player = ClientProxy.getClientPlayer();
         int age = getBabyNbt(stack).getInt("age") + (int)(world == null ? 0 : world.getTime() % 1200);
 

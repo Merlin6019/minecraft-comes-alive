@@ -2,7 +2,7 @@ package net.mca.item;
 
 import net.mca.client.book.Book;
 import net.mca.util.localization.FlowingText;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -17,7 +17,7 @@ public class CivilRegistry extends ExtendedWrittenBookItem {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, Item.TooltipContext context) {
         tooltip.addAll(FlowingText.wrap(Text.translatable(getTranslationKey(stack) + ".tooltip").formatted(Formatting.GRAY), 160));
     }
 }

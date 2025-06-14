@@ -71,7 +71,7 @@ public final class Config implements Serializable {
     public int childInitialHearts = 100;
     public int greetHeartsThreshold = 75;
     public int greetAfterDays = 1;
-    public float geneticImmigrantChance = 0.2f;
+    public float geneticImmigrantChance = 0.05f;
     public float traitChance = 0.25f;
     public float traitInheritChance = 0.5f;
     public boolean bypassTraitRestrictions = false;

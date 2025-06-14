@@ -110,6 +110,20 @@ public class Genetics implements Iterable<Genetics.Gene> {
     public float hemoglobin_min_pinkRed = 0.26F;
     public float hemoglobin_max_pinkRed = 0.5F;
 
+    // SIZE Range and WIDTH multiplier
+    public float size_min_folk = 0.35F;
+    public float size_max_folk = 0.75F;
+    public float width_multiplier_folk = 1;
+
+    public float size_min_elf = 0.5F;
+    public float size_max_elf = 0.9F;
+    public float width_multiplier_elf = 0.75F;
+
+    public float size_min_orc = 0.65F;
+    public float size_max_orc = 1;
+    public float width_multiplier_orc = 1.25F;
+
+
     private static final CEnumParameter<Gender> GENDER = CParameter.create("gender", Gender.UNASSIGNED);
 
     public static <E extends Entity> CDataManager.Builder<E> createTrackedData(CDataManager.Builder<E> builder) {
@@ -170,10 +184,6 @@ public class Genetics implements Iterable<Genetics.Gene> {
             getGenome(type).randomize();
         }
 
-        // size is more centered
-        setGene(SIZE, centeredRandom());
-        setGene(WIDTH, centeredRandom());
-
         // temperature
         float temp = entity.asEntity().getWorld().getBiome(entity.asEntity().getBlockPos()).value().getTemperature();
 
@@ -194,59 +204,88 @@ public class Genetics implements Iterable<Genetics.Gene> {
 
         String biomeName = biomeId != null ? biomeId.toString() : "unknown";
 
+        Float finalSize = 0.5F;
+
         switch (biomeName) {
             case "bleakisles:ahrathi_isles_badlands":
                 // Ahrathi
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_ahrathi, melanin_max_ahrathi));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:ahrathi_isles_jungle_east":
                 // Ahrathi
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_ahrathi, melanin_max_ahrathi));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:ahrathi_isles_jungle_south":
                 // Ahrathi
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_ahrathi, melanin_max_ahrathi));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:blundercast_jungle":
                 // Sea Nomad
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_sea_nomad, melanin_max_sea_nomad));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:crimson_isles_mangrove_swamp":
                 // Crimson Elf
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_crimson_elf, melanin_max_crimson_elf));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
+                finalSize = MathHelper.nextFloat(random, size_min_elf, size_max_elf);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_elf);
                 break;
 
             case "bleakisles:crimson_isles_plains":
                 // Crimson Elf
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_crimson_elf, melanin_max_crimson_elf));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
+                finalSize = MathHelper.nextFloat(random, size_min_elf, size_max_elf);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_elf);
                 break;
 
             case "bleakisles:crimson_isles_jungle":
                 // Crimson Orc
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_crimson_orc, melanin_max_crimson_orc));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_pinkRed, hemoglobin_max_pinkRed));
+                finalSize = MathHelper.nextFloat(random, size_min_orc, size_max_orc);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_orc);
                 break;
 
             case "bleakisles:crimson_isles_forest":
                 // Crimson Elf
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_crimson_elf, melanin_max_crimson_elf));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
+                finalSize = MathHelper.nextFloat(random, size_min_elf, size_max_elf);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_elf);
                 break;
 
             case "bleakisles:eidlihas_wooded_badlands":
                 // Elder Orcs
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_elder_orc, melanin_max_elder_orc));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_green, hemoglobin_max_green));
+                finalSize = MathHelper.nextFloat(random, size_min_orc, size_max_orc);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_orc);
                 break;
 
             case "bleakisles:eidlihas_birch_forest":
@@ -255,10 +294,16 @@ public class Genetics implements Iterable<Genetics.Gene> {
                 if (random_selection == 0){ // Gray Elf
                     setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_gray_elf, melanin_max_gray_elf));
                     setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
+                    finalSize = MathHelper.nextFloat(random, size_min_elf, size_max_elf);
+                    setGene(SIZE, finalSize);
+                    setGene(WIDTH, finalSize * width_multiplier_elf);
                 }
                 else{ // Sun Elf
                     setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_sun_elf, melanin_max_sun_elf));
                     setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_yellow, hemoglobin_max_yellow));
+                    finalSize = MathHelper.nextFloat(random, size_min_elf, size_max_elf);
+                    setGene(SIZE, finalSize);
+                    setGene(WIDTH, finalSize * width_multiplier_elf);
                 }
                 break;
 
@@ -266,179 +311,269 @@ public class Genetics implements Iterable<Genetics.Gene> {
                 // Elder Orcs
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_elder_orc, melanin_max_elder_orc));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_green, hemoglobin_max_green));
+                finalSize = MathHelper.nextFloat(random, size_min_orc, size_max_orc);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_orc);
                 break;
 
             case "bleakisles:folken_isles_aetlis_forest":
                 // Aetlisians
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_northern_folk, melanin_max_northern_folk));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:folken_isles_aetlis_swamp":
                 // Aetlisians
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_northern_folk, melanin_max_northern_folk));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:folken_isles_flower_forest":
                 // Maskaenians
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_northern_folk, melanin_max_northern_folk));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:folken_isles_naranir_dark_forest":
                 // Naranirians
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_northern_folk, melanin_max_northern_folk));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:folken_isles_ithlaer_snowy_taiga":
                 // Ithlaerians
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_northern_folk, melanin_max_northern_folk));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:folken_isles_orbeitor_snowy_taiga":
                 // Orbeitians
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_northern_folk, melanin_max_northern_folk));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:folken_isles_ithlaer_dark_forest":
                 // Ithlaerians
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_northern_folk, melanin_max_northern_folk));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:folken_isles_orbeitor_taiga":
                 // Orbeitians
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_northern_folk, melanin_max_northern_folk));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:folken_isles_ithlaer_taiga":
                 // Ithlaerians
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_northern_folk, melanin_max_northern_folk));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:omn_sunflower_plains":
                 // Sea Elves
                 setGene(MELANIN, melanin_sea_elf);
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_blue, hemoglobin_max_blue));
+                finalSize = MathHelper.nextFloat(random, size_min_elf, size_max_elf);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_elf);
                 break;
 
             case "bleakisles:sandstone_basin_jungle":
                 // Ahrathi
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_ahrathi, melanin_max_ahrathi));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:sandstone_basin_savannah":
                 // Ahrathi
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_ahrathi, melanin_max_ahrathi));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:shattered_coasts_plains_north":
                 // Pale Elf
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_pale_elf, melanin_max_pale_elf));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
+                finalSize = MathHelper.nextFloat(random, size_min_elf, size_max_elf);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_elf);
                 break;
 
             case "bleakisles:shattered_coasts_taiga_east":
                 // Pale Elf
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_pale_elf, melanin_max_pale_elf));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
+                finalSize = MathHelper.nextFloat(random, size_min_elf, size_max_elf);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_elf);
                 break;
 
             case "bleakisles:shattered_coasts_taiga_west":
                 // Pale Elf
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_pale_elf, melanin_max_pale_elf));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
+                finalSize = MathHelper.nextFloat(random, size_min_elf, size_max_elf);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_elf);
                 break;
 
             case "bleakisles:shattered_coasts_snowy_taiga_east":
                 // Pale Elf
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_pale_elf, melanin_max_pale_elf));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
+                finalSize = MathHelper.nextFloat(random, size_min_elf, size_max_elf);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_elf);
                 break;
 
             case "bleakisles:shattered_coasts_snowy_taiga_west":
                 // Pale Elf
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_pale_elf, melanin_max_pale_elf));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
+                finalSize = MathHelper.nextFloat(random, size_min_elf, size_max_elf);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_elf);
                 break;
 
             case "bleakisles:shattered_coasts_snowy_plains":
                 // Pale Elf
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_pale_elf, melanin_max_pale_elf));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
+                finalSize = MathHelper.nextFloat(random, size_min_elf, size_max_elf);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_elf);
                 break;
 
             case "bleakisles:silver_isles_forest":
                 // Silver Orcs
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_silver_orc, melanin_max_silver_orc));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_blue, hemoglobin_max_blue));
+                finalSize = MathHelper.nextFloat(random, size_min_orc, size_max_orc);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_orc);
                 break;
 
             case "bleakisles:silver_isles_plains":
                 // Silver Orcs
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_silver_orc, melanin_max_silver_orc));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_blue, hemoglobin_max_blue));
+                finalSize = MathHelper.nextFloat(random, size_min_orc, size_max_orc);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_orc);
                 break;
 
             case "bleakisles:silver_isles_mushroom_fields":
                 // Silver Orcs
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_silver_orc, melanin_max_silver_orc));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_blue, hemoglobin_max_blue));
+                finalSize = MathHelper.nextFloat(random, size_min_orc, size_max_orc);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_orc);
                 break;
 
             case "bleakisles:ahrathi_isles_desert":
                 // Ahrathi
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_sea_nomad, melanin_max_sea_nomad));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:eidlihas_plains":
                 // Sun Elf
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_sun_elf, melanin_max_sun_elf));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_yellow, hemoglobin_max_yellow));
+                finalSize = MathHelper.nextFloat(random, size_min_elf, size_max_elf);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_elf);
                 break;
 
             case "bleakisles:sandstone_basin_desert":
                 // Ahrathi
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_sea_nomad, melanin_max_sea_nomad));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:vingoria_plains":
                 // Ashen
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_ashen, melanin_max_ashen));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_yellow, hemoglobin_max_yellow));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:vingoria_ashland":
                 // Ashen
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_ashen, melanin_max_ashen));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_yellow, hemoglobin_max_yellow));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:vingoria_dark_forest":
                 // Ashen
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_ashen, melanin_max_ashen));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_yellow, hemoglobin_max_yellow));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             case "bleakisles:vingoria_jungle":
                 // Ashen
                 setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_ashen, melanin_max_ashen));
                 setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_yellow, hemoglobin_max_yellow));
+                finalSize = MathHelper.nextFloat(random, size_min_folk, size_max_folk);
+                setGene(SIZE, finalSize);
+                setGene(WIDTH, finalSize * width_multiplier_folk);
                 break;
 
             default:
                 setGene(MELANIN, MathHelper.clamp(temperatureBaseRandom(temp) - height * 0.2f, 0, 1));
                 setGene(HEMOGLOBIN, MathHelper.clamp(temperatureBaseRandom(temp) * 0.5f + height * 0.5f, 0, 1));
+                // size is more centered
+                setGene(SIZE, centeredRandom());
+                setGene(WIDTH, centeredRandom());
                 break;
         }
 

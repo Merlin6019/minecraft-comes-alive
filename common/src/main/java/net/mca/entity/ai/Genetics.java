@@ -1,7 +1,6 @@
 package net.mca.entity.ai;
 
 import net.mca.Config;
-import net.mca.client.model.CommonVillagerModel;
 import net.mca.entity.VillagerLike;
 import net.mca.entity.ai.relationship.Gender;
 import net.mca.util.network.datasync.CDataManager;
@@ -53,7 +52,7 @@ public class Genetics implements Iterable<Genetics.Gene> {
     public float melanin_min_ashen = 0;
     public float melanin_max_ashen = 0.16F;
 
-    // FIR
+    // ELF
     // Sun Elf Melanin (4)
     public float melanin_min_sun_elf = 0.16F;
     public float melanin_max_sun_elf = 0.32F;
@@ -73,7 +72,7 @@ public class Genetics implements Iterable<Genetics.Gene> {
     // Sea Elves Melanin (8)
     public float melanin_sea_elf = 0.51F;
 
-    // FYKH
+    // ORC
     // Elder Orc Melanin (9)
     public float melanin_min_elder_orc = 0F;
     public float melanin_max_elder_orc = 0.16F;
@@ -171,378 +170,531 @@ public class Genetics implements Iterable<Genetics.Gene> {
             getGenome(type).randomize();
         }
 
-        // temperature
-        float temp = entity.asEntity().getWorld().getBiome(entity.asEntity().getBlockPos()).value().getTemperature();
-
-        float height = entity.asEntity().getBlockPos().getY();
-        height -= entity.asEntity().getWorld().getSeaLevel();
-        height /= 128;
-
-        Biome biome = entity.asEntity().getWorld().getBiome(entity.asEntity().getBlockPos()).value();
-
-        Identifier biomeId = entity.asEntity().getWorld().getRegistryManager()
-            .get(RegistryKeys.BIOME)
-            .getId(biome);
-
-        String biomeName = biomeId != null ? biomeId.toString() : "unknown";
-
-        // immigrants
-        if (random.nextFloat() < Config.getInstance().geneticImmigrantChance) {
-            String[] raceArray = {
-                "bleakisles:folken_isles_orbeitor_taiga", // Northern Folk
-                "bleakisles:ahrathi_isles_desert", // Ahrathi
-                "bleakisles:blundercast_jungle", // Sea Nomad
-                "bleakisles:vingoria_ashland", // Ashen
-                "bleakisles:crimson_isles_forest", // Crimson Elf
-                "bleakisles:eidlihas_plains", // Sun Elf
-                "bleakisles:shattered_coasts_plains_north", // Pale Elf
-                "bleakisles:omn_sunflower_plains", // Sea Elf
-                "bleakisles:silver_isles_plains", // Silver Orc
-                "bleakisles:crimson_isles_jungle", // Crimson Orc
-                "bleakisles:eidlihas_wooded_badlands", // Elder Orc
-            };
-
-            int randomRaceIndex = random.nextInt(raceArray.length);
-
-            biomeName = raceArray[randomRaceIndex];
-        }
+        String[] raceArray = {
+            // Folk
+            "folk_northerner",
+            "folk_mainlander",
+            "folk_northern_ahrathi",
+            "folk_southern_ahrathi",
+            "folk_murgish",
+            "folk_ashen",
+            // Elves
+            "elf_crimson",
+            "elf_gray",
+            "elf_sun",
+            "elf_sand",
+            "elf_pale",
+            "elf_sea",
+            // Orcs
+            "orc_silver",
+            "orc_crimson",
+            "orc_mainlander",
+        };
 
         boolean hasHeterochromia = entity.getTraits().hasTrait(Traits.HETEROCHROMIA);
         Integer random_eye = MathHelper.nextInt(Random.create(), 0, 2);
 
-        switch (biomeName) {
-            case "bleakisles:ahrathi_isles_badlands", "bleakisles:sandstone_basin_savannah", "bleakisles:ahrathi_isles_desert", "bleakisles:sandstone_basin_desert", "bleakisles:sandstone_basin_jungle", "bleakisles:ahrathi_isles_jungle_south", "bleakisles:ahrathi_isles_jungle_east":
-                // Ahrathi
-                setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_ahrathi, melanin_max_ahrathi));
-                setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
-                setGene(SIZE, centeredRandom(0.6F));
-                setGene(WIDTH, centeredRandom(0.5F));
+        String race = "folk_murgish"; // Default fallback race
+
+        // Immigrant Race
+        if (random.nextFloat() < Config.getInstance().geneticImmigrantChance) {
+
+            int randomRaceIndex = random.nextInt(raceArray.length);
+
+            race = raceArray[randomRaceIndex];
+        }
+        else{
+            race = getRaceByBiome();
+        }
+
+        switch(race){
+            case "folk_northerner":
+
+            setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_northern_folk, melanin_max_northern_folk));
+            setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+            setGene(SIZE, centeredRandom(0.5F));
+            setGene(WIDTH, centeredRandom(0.4F));
+
+            if (random_eye == 0){
+                setGene(FACE, 1); // Hazel
+                if (hasHeterochromia){
+                    setGene(FACE, 17); // Brown/Blind
+                }
+            }
+            else if (random_eye == 1){
+                setGene(FACE, 16); // Light Blue
+                if (hasHeterochromia){
+                    setGene(FACE, 3); // Brown/Blue
+                }
+            }
+            else{
+                setGene(FACE, 3); // Light Green
+                if (hasHeterochromia){
+                    setGene(FACE, 1); // Blue/Green
+                }
+            }
+            break;
+
+            case "folk_mainlander":
+
+            setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_northern_folk, melanin_max_northern_folk));
+            setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+            setGene(SIZE, centeredRandom(0.5F));
+            setGene(WIDTH, centeredRandom(0.4F));
+
+            if (random_eye == 0){
+                setGene(FACE, 1); // Hazel
+                if (hasHeterochromia){
+                    setGene(FACE, 17); // Brown/Blind
+                }
+            }
+            else if (random_eye == 1){
+                setGene(FACE, 16); // Light Blue
+                if (hasHeterochromia){
+                    setGene(FACE, 3); // Brown/Blue
+                }
+            }
+            else{
+                setGene(FACE, 3); // Light Green
+                if (hasHeterochromia){
+                    setGene(FACE, 1); // Blue/Green
+                }
+            }
+            break;
+
+            case "folk_northern_ahrathi":
+
+            setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_sea_nomad, melanin_max_sea_nomad));
+            setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+            setGene(SIZE, centeredRandom(0.6F));
+            setGene(WIDTH, centeredRandom(0.5F));
+
+            if (random_eye == 0){
+                setGene(FACE, 0); // Brown
+                if (hasHeterochromia){
+                    setGene(FACE, 17); // Brown/Blind
+                }
+            }
+            else if (random_eye == 1){
+                setGene(FACE, 1); // Hazel
+                if (hasHeterochromia){
+                    setGene(FACE, 14); // Light Blue/Brown
+                }
+            }
+            else{
+                setGene(FACE, 11); // Gold
+                if (hasHeterochromia){
+                    setGene(FACE, 7); // Gray/Gold
+                }
+            }
+            break;
+
+            case "folk_southern_ahrathi":
+
+            setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_ahrathi, melanin_max_ahrathi));
+            setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+            setGene(SIZE, centeredRandom(0.6F));
+            setGene(WIDTH, centeredRandom(0.5F));
+
+            if (random_eye == 0){
+                setGene(FACE, 0); // Brown
+                if (hasHeterochromia){
+                    setGene(FACE, 17); // Brown/Blind
+                }
+            }
+            else if (random_eye == 1){
+                setGene(FACE, 1); // Hazel
+                if (hasHeterochromia){
+                    setGene(FACE, 14); // Light Blue/Brown
+                }
+            }
+            else{
+                setGene(FACE, 11); // Gold
+                if (hasHeterochromia){
+                    setGene(FACE, 7); // Gray/Gold
+                }
+            }
+            break;
+
+            case "folk_murgish":
+
+            setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_sea_nomad, melanin_max_sea_nomad));
+            setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+            setGene(SIZE, centeredRandom(0.65F));
+            setGene(WIDTH, centeredRandom(0.55F));
+
+            if (random_eye == 0){
+                setGene(FACE, 0); // Brown
+                if (hasHeterochromia){
+                    setGene(FACE, 17); // Brown/Blind
+                }
+            }
+            else if (random_eye == 1){
+                setGene(FACE, 3); // Light Green
+                if (hasHeterochromia){
+                    setGene(FACE, 2); // Light Green/Teal
+                }
+            }
+            else{
+                setGene(FACE, 9); // Gray
+                if (hasHeterochromia){
+                    setGene(FACE, 7); // Gray/Gold
+                }
+            }
+            break;
+
+            case "folk_ashen":
+
+            setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_ashen, melanin_max_ashen));
+            setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_yellow, hemoglobin_max_yellow));
+            setGene(SIZE, centeredRandom(0.45F));
+            setGene(WIDTH, centeredRandom(0.35F));
+
+            if (random_eye == 0){
+                setGene(FACE, 9); // Gray
+                if (hasHeterochromia){
+                    setGene(FACE, 9); // Purple/Gray
+                }
+            }
+            else if (random_eye == 1){
+                setGene(FACE, 6); // Red
+                if (hasHeterochromia){
+                    setGene(FACE, 13); // Salmon/Gray
+                }
+            }
+            else{
+                setGene(FACE, 1); // Brown
+                if (hasHeterochromia){
+                    setGene(FACE, 5); // Brown/Purple
+                }
+            }
+            break;
+
+            case "elf_crimson":
+
+            setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_crimson_elf, melanin_max_crimson_elf));
+            setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
+            setGene(SIZE, centeredRandom(0.75F));
+            setGene(WIDTH, centeredRandom(0.55F));
+
+            if (random_eye == 0){
+                setGene(FACE, 6); // Red
+                if (hasHeterochromia){
+                    setGene(FACE, 4); // Red/Purple
+                }
+            }
+            else if (random_eye == 1){
+                setGene(FACE, 8); // Purple
+                if (hasHeterochromia){
+                    setGene(FACE, 4); // Red/Purple
+                }
+            }
+            else{
+                setGene(FACE, 9); // Gray
+                if (hasHeterochromia){
+                    setGene(FACE, 5); // Brown/Purple
+                }
+            }
+            break;
+
+            case "elf_gray":
+
+            setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_gray_elf, melanin_max_gray_elf));
+            setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
+            setGene(SIZE, centeredRandom(0.77F));
+            setGene(WIDTH, centeredRandom(0.57F));
+
+            if (random_eye == 0){
+                setGene(FACE, 6); // Red
+                if (hasHeterochromia){
+                    setGene(FACE, 4); // Red/Purple
+                }
+            }
+            else if (random_eye == 1){
+                setGene(FACE, 8); // Purple
+                if (hasHeterochromia){
+                    setGene(FACE, 4); // Red/Purple
+                }
+            }
+            else{
+                setGene(FACE, 9); // Gray
+                if (hasHeterochromia){
+                    setGene(FACE, 5); // Brown/Purple
+                }
+            }
+            break;
+
+            case "elf_sun":
+
+            setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_sun_elf, melanin_max_sun_elf));
+            setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_yellow, hemoglobin_max_yellow));
+            setGene(SIZE, centeredRandom(0.8F));
+            setGene(WIDTH, centeredRandom(0.6F));
 
                 if (random_eye == 0){
-                    setGene(FACE, 0); // Brown
+                    setGene(FACE, 11); // Gold
                     if (hasHeterochromia){
-                        setGene(FACE, 17); // Brown/Blind
+                        setGene(FACE, 10); // Gold/Red
                     }
                 }
                 else if (random_eye == 1){
-                    setGene(FACE, 1); // Hazel
+                    setGene(FACE, 2); // Blue
                     if (hasHeterochromia){
                         setGene(FACE, 14); // Light Blue/Brown
                     }
                 }
                 else{
-                    setGene(FACE, 11); // Gold
+                    setGene(FACE, 3); // Green
                     if (hasHeterochromia){
-                        setGene(FACE, 7); // Gray/Gold
+                        setGene(FACE, 2); // Teal/Light Green
                     }
                 }
-                break;
+            break;
 
-            case "bleakisles:blundercast_jungle":
-                // Sea Nomad
-                setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_sea_nomad, melanin_max_sea_nomad));
-                setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
-                setGene(SIZE, centeredRandom(0.65F));
-                setGene(WIDTH, centeredRandom(0.55F));
+            case "elf_pale":
 
-                if (random_eye == 0){
-                    setGene(FACE, 0); // Brown
-                    if (hasHeterochromia){
-                        setGene(FACE, 17); // Brown/Blind
-                    }
-                }
-                else if (random_eye == 1){
-                    setGene(FACE, 3); // Light Green
-                    if (hasHeterochromia){
-                        setGene(FACE, 2); // Light Green/Teal
-                    }
-                }
-                else{
-                    setGene(FACE, 9); // Gray
-                    if (hasHeterochromia){
-                        setGene(FACE, 7); // Gray/Gold
-                    }
-                }
-                break;
+            setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_pale_elf, melanin_max_pale_elf));
+            setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
+            setGene(SIZE, centeredRandom(0.75F));
+            setGene(WIDTH, centeredRandom(0.55F));
 
-            case "bleakisles:crimson_isles_mangrove_swamp", "bleakisles:crimson_isles_plains", "bleakisles:crimson_isles_forest":
-                // Crimson Elf
-                setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_crimson_elf, melanin_max_crimson_elf));
-                setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
-                setGene(SIZE, centeredRandom(0.75F));
-                setGene(WIDTH, centeredRandom(0.55F));
-
-                if (random_eye == 0){
-                    setGene(FACE, 6); // Red
-                    if (hasHeterochromia){
-                        setGene(FACE, 4); // Red/Purple
-                    }
-                }
-                else if (random_eye == 1){
-                    setGene(FACE, 8); // Purple
-                    if (hasHeterochromia){
-                        setGene(FACE, 4); // Red/Purple
-                    }
-                }
-                else{
-                    setGene(FACE, 9); // Gray
-                    if (hasHeterochromia){
-                        setGene(FACE, 5); // Brown/Purple
-                    }
-                }
-                break;
-
-            case "bleakisles:crimson_isles_jungle":
-                // Crimson Orc
-                setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_crimson_orc, melanin_max_crimson_orc));
-                setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_pinkRed, hemoglobin_max_pinkRed));
-                setGene(SIZE, centeredRandom(0.85F));
-                setGene(WIDTH, centeredRandom(95F));
-
-                setGene(FACE, 17); // Red Orc
+            if (random_eye == 0){
+                setGene(FACE, 14); // Light pink
                 if (hasHeterochromia){
-                    setGene(FACE, 18); // Blind/Red Orc
+                    setGene(FACE, 9); // Purple/Gray
                 }
-                break;
+            }
+            else if (random_eye == 1){
+                setGene(FACE, 12); // Yellow
+                if (hasHeterochromia){
+                    setGene(FACE, 10); // Gold/Red
+                }
+            }
+            else{
+                setGene(FACE, 16); // Light blue
+                if (hasHeterochromia){
+                    setGene(FACE, 13); // Salmon/Gray
+                }
+            }
+            break;
 
-            case "bleakisles:eidlihas_wooded_badlands", "bleakisles:eidlihas_badlands":
-                // Elder Orcs
-                setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_elder_orc, melanin_max_elder_orc));
-                setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_green, hemoglobin_max_green));
-                setGene(SIZE, centeredRandom(0.9F));
-                setGene(WIDTH, centeredRandom(1F));
+            case "elf_sand":
+
+            setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_ahrathi, melanin_max_ahrathi));
+            setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+            setGene(SIZE, centeredRandom(0.8F));
+            setGene(WIDTH, centeredRandom(0.6F));
 
                 if (random_eye == 0){
-                    setGene(FACE, 17); // Red
-                    if (hasHeterochromia){
-                        setGene(FACE, 18); // Red/Blind
-                    }
-                }
-                else if (random_eye == 1){
-                    setGene(FACE, 19); // Blue
-                    if (hasHeterochromia){
-                        setGene(FACE, 21); // Blue/Green
-                    }
-                }
-                else{
-                    setGene(FACE, 20); // Green
-                    if (hasHeterochromia){
-                        setGene(FACE, 19); // Red/Green
-                    }
-                }
-                break;
-
-            case "bleakisles:eidlihas_birch_forest":
-                // Gray or Sun Elves
-                Integer random_selection = MathHelper.nextBetween(Random.create(), 0, 1);
-                if (random_selection == 0){ // Gray Elf
-                    setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_gray_elf, melanin_max_gray_elf));
-                    setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
-                    setGene(SIZE, centeredRandom(0.77F));
-                    setGene(WIDTH, centeredRandom(0.57F));
-
-                    if (random_eye == 0){
-                        setGene(FACE, 6); // Red
-                        if (hasHeterochromia){
-                            setGene(FACE, 4); // Red/Purple
-                        }
-                    }
-                    else if (random_eye == 1){
-                        setGene(FACE, 8); // Purple
-                        if (hasHeterochromia){
-                            setGene(FACE, 4); // Red/Purple
-                        }
-                    }
-                    else{
-                        setGene(FACE, 9); // Gray
-                        if (hasHeterochromia){
-                            setGene(FACE, 5); // Brown/Purple
-                        }
-                    }
-                }
-                else{ // Sun Elf
-                    setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_sun_elf, melanin_max_sun_elf));
-                    setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_yellow, hemoglobin_max_yellow));
-                    setGene(SIZE, centeredRandom(0.8F));
-                    setGene(WIDTH, centeredRandom(0.6F));
-
-                    if (random_eye == 0){
-                        setGene(FACE, 11); // Gold
-                        if (hasHeterochromia){
-                            setGene(FACE, 10); // Gold/Red
-                        }
-                    }
-                    else if (random_eye == 1){
-                        setGene(FACE, 2); // Blue
-                        if (hasHeterochromia){
-                            setGene(FACE, 14); // Light Blue/Brown
-                        }
-                    }
-                    else{
-                        setGene(FACE, 3); // Green
-                        if (hasHeterochromia){
-                            setGene(FACE, 2); // Teal/Light Green
-                        }
-                    }
-                }
-                break;
-
-            case "bleakisles:folken_isles_orbeitor_taiga", "bleakisles:folken_isles_ithlaer_taiga", "bleakisles:folken_isles_ithlaer_dark_forest", "bleakisles:folken_isles_orbeitor_snowy_taiga", "bleakisles:folken_isles_ithlaer_snowy_taiga", "bleakisles:folken_isles_naranir_dark_forest", "bleakisles:folken_isles_flower_forest", "bleakisles:folken_isles_aetlis_forest", "bleakisles:folken_isles_aetlis_swamp":
-                // Northern Folk
-                setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_northern_folk, melanin_max_northern_folk));
-                setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
-                setGene(SIZE, centeredRandom(0.5F));
-                setGene(WIDTH, centeredRandom(0.4F));
-
-                if (random_eye == 0){
-                    setGene(FACE, 1); // Hazel
-                    if (hasHeterochromia){
-                        setGene(FACE, 17); // Brown/Blind
-                    }
-                }
-                else if (random_eye == 1){
-                    setGene(FACE, 16); // Light Blue
-                    if (hasHeterochromia){
-                        setGene(FACE, 3); // Brown/Blue
-                    }
-                }
-                else{
-                    setGene(FACE, 3); // Light Green
-                    if (hasHeterochromia){
-                        setGene(FACE, 1); // Blue/Green
-                    }
-                }
-                break;
-
-            case "bleakisles:omn_sunflower_plains":
-                // Sea Elves
-                setGene(MELANIN, melanin_sea_elf);
-                setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_blue, hemoglobin_max_blue));
-                setGene(SIZE, centeredRandom(0.85F));
-                setGene(WIDTH, centeredRandom(0.65F));
-
-                setGene(FACE, 10); // Blind
-                break;
-
-            case "bleakisles:shattered_coasts_snowy_taiga_west", "bleakisles:shattered_coasts_snowy_plains", "bleakisles:shattered_coasts_snowy_taiga_east", "bleakisles:shattered_coasts_taiga_west", "bleakisles:shattered_coasts_taiga_east", "bleakisles:shattered_coasts_plains_north":
-                // Pale Elf
-                setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_pale_elf, melanin_max_pale_elf));
-                setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
-                setGene(SIZE, centeredRandom(0.75F));
-                setGene(WIDTH, centeredRandom(0.55F));
-
-                if (random_eye == 0){
-                    setGene(FACE, 14); // Light pink
-                    if (hasHeterochromia){
-                        setGene(FACE, 9); // Purple/Gray
-                    }
-                }
-                else if (random_eye == 1){
-                    setGene(FACE, 12); // Yellow
+                    setGene(FACE, 11); // Gold
                     if (hasHeterochromia){
                         setGene(FACE, 10); // Gold/Red
                     }
                 }
-                else{
-                    setGene(FACE, 16); // Light blue
-                    if (hasHeterochromia){
-                        setGene(FACE, 13); // Salmon/Gray
-                    }
-                }
-                break;
-
-            case "bleakisles:silver_isles_plains", "bleakisles:silver_isles_mushroom_fields", "bleakisles:silver_isles_forest":
-                // Silver Orcs
-                setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_silver_orc, melanin_max_silver_orc));
-                setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_blue, hemoglobin_max_blue));
-                setGene(SIZE, centeredRandom(0.87F));
-                setGene(WIDTH, centeredRandom(0.97F));
-
-                if (random_eye == 0){
-                    setGene(FACE, 17); // Red
-                    if (hasHeterochromia){
-                        setGene(FACE, 18); // Red/Blind
-                    }
-                }
                 else if (random_eye == 1){
-                    setGene(FACE, 19); // Blue
+                    setGene(FACE, 2); // Blue
                     if (hasHeterochromia){
-                        setGene(FACE, 21); // Blue/Green
+                        setGene(FACE, 14); // Light Blue/Brown
                     }
                 }
                 else{
-                    setGene(FACE, 18); // Green
+                    setGene(FACE, 3); // Green
                     if (hasHeterochromia){
-                        setGene(FACE, 20); // Brown/Blind
+                        setGene(FACE, 2); // Teal/Light Green
                     }
                 }
-                break;
+            break;
 
-            case "bleakisles:eidlihas_plains":
-                // Sun Elf
-                setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_sun_elf, melanin_max_sun_elf));
-                setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_yellow, hemoglobin_max_yellow));
-                setGene(SIZE, centeredRandom(0.8F));
-                setGene(WIDTH, centeredRandom(0.6F));
+            case "elf_sea":
 
-                    if (random_eye == 0){
-                        setGene(FACE, 11); // Gold
-                        if (hasHeterochromia){
-                            setGene(FACE, 10); // Gold/Red
-                        }
-                    }
-                    else if (random_eye == 1){
-                        setGene(FACE, 2); // Blue
-                        if (hasHeterochromia){
-                            setGene(FACE, 14); // Light Blue/Brown
-                        }
-                    }
-                    else{
-                        setGene(FACE, 3); // Green
-                        if (hasHeterochromia){
-                            setGene(FACE, 2); // Teal/Light Green
-                        }
-                    }
-                break;
+            setGene(MELANIN, melanin_sea_elf);
+            setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_blue, hemoglobin_max_blue));
+            setGene(SIZE, centeredRandom(0.85F));
+            setGene(WIDTH, centeredRandom(0.65F));
 
-            case "bleakisles:vingoria_dark_forest", "bleakisles:vingoria_jungle", "bleakisles:vingoria_ashland", "bleakisles:vingoria_plains":
-                // Ashen
-                setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_ashen, melanin_max_ashen));
-                setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_yellow, hemoglobin_max_yellow));
-                setGene(SIZE, centeredRandom(0.45F));
-                setGene(WIDTH, centeredRandom(0.35F));
+            setGene(FACE, 10); // Blind
+            break;
 
-                if (random_eye == 0){
-                    setGene(FACE, 9); // Gray
-                    if (hasHeterochromia){
-                        setGene(FACE, 9); // Purple/Gray
-                    }
+            case "orc_silver":
+
+            setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_silver_orc, melanin_max_silver_orc));
+            setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_blue, hemoglobin_max_blue));
+            setGene(SIZE, centeredRandom(0.87F));
+            setGene(WIDTH, centeredRandom(0.97F));
+
+            if (random_eye == 0){
+                setGene(FACE, 17); // Red
+                if (hasHeterochromia){
+                    setGene(FACE, 18); // Red/Blind
                 }
-                else if (random_eye == 1){
-                    setGene(FACE, 6); // Red
-                    if (hasHeterochromia){
-                        setGene(FACE, 13); // Salmon/Gray
-                    }
+            }
+            else if (random_eye == 1){
+                setGene(FACE, 19); // Blue
+                if (hasHeterochromia){
+                    setGene(FACE, 21); // Blue/Green
                 }
-                else{
-                    setGene(FACE, 1); // Brown
-                    if (hasHeterochromia){
-                        setGene(FACE, 5); // Brown/Purple
-                    }
+            }
+            else{
+                setGene(FACE, 18); // Green
+                if (hasHeterochromia){
+                    setGene(FACE, 20); // Brown/Blind
                 }
-                break;
+            }
+            break;
+
+            case "orc_crimson":
+
+            setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_crimson_orc, melanin_max_crimson_orc));
+            setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_pinkRed, hemoglobin_max_pinkRed));
+            setGene(SIZE, centeredRandom(0.85F));
+            setGene(WIDTH, centeredRandom(95F));
+
+            setGene(FACE, 17); // Red Orc
+            if (hasHeterochromia){
+                setGene(FACE, 18); // Blind/Red Orc
+            }
+            break;
+
+            case "orc_mainlander":
+
+            setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_elder_orc, melanin_max_elder_orc));
+            setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_green, hemoglobin_max_green));
+            setGene(SIZE, centeredRandom(0.9F));
+            setGene(WIDTH, centeredRandom(1F));
+
+            if (random_eye == 0){
+                setGene(FACE, 17); // Red
+                if (hasHeterochromia){
+                    setGene(FACE, 18); // Red/Blind
+                }
+            }
+            else if (random_eye == 1){
+                setGene(FACE, 19); // Blue
+                if (hasHeterochromia){
+                    setGene(FACE, 21); // Blue/Green
+                }
+            }
+            else{
+                setGene(FACE, 20); // Green
+                if (hasHeterochromia){
+                    setGene(FACE, 19); // Red/Green
+                }
+            }
+            break;
 
             default:
-                setGene(MELANIN, MathHelper.clamp(temperatureBaseRandom(temp) - height * 0.2f, 0, 1));
-                setGene(HEMOGLOBIN, MathHelper.clamp(temperatureBaseRandom(temp) * 0.5f + height * 0.5f, 0, 1));
-                // size is more centered
-                setGene(SIZE, centeredRandom(0.5F));
-                setGene(WIDTH, centeredRandom(0.5F));
-                break;
+            // Murgish by default
+            setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_sea_nomad, melanin_max_sea_nomad));
+            setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
+            setGene(SIZE, centeredRandom(0.65F));
+            setGene(WIDTH, centeredRandom(0.55F));
+
+            if (random_eye == 0){
+                setGene(FACE, 0); // Brown
+                if (hasHeterochromia){
+                    setGene(FACE, 17); // Brown/Blind
+                }
+            }
+            else if (random_eye == 1){
+                setGene(FACE, 3); // Light Green
+                if (hasHeterochromia){
+                    setGene(FACE, 2); // Light Green/Teal
+                }
+            }
+            else{
+                setGene(FACE, 9); // Gray
+                if (hasHeterochromia){
+                    setGene(FACE, 7); // Gray/Gold
+                }
+            }
+            break;
         }
 
         setGene(EUMELANIN, random.nextFloat());
         setGene(PHEOMELANIN, random.nextFloat());
+    }
+
+    private String getRaceByBiome(){
+            Biome biome = entity.asEntity().getWorld().getBiome(entity.asEntity().getBlockPos()).value();
+
+            Identifier biomeId = entity.asEntity().getWorld().getRegistryManager()
+            .get(RegistryKeys.BIOME)
+            .getId(biome);
+
+            String biomeName = biomeId != null ? biomeId.toString() : "unknown";
+
+            Integer random_selection = MathHelper.nextBetween(Random.create(), 0, 1);
+            
+            switch (biomeName) {
+                case "bleakisles:folken_isles_orbeitor_taiga", "bleakisles:folken_isles_ithlaer_taiga", "bleakisles:folken_isles_ithlaer_dark_forest", "bleakisles:folken_isles_orbeitor_snowy_taiga", "bleakisles:folken_isles_ithlaer_snowy_taiga", "bleakisles:folken_isles_naranir_dark_forest":
+                    return "folk_northerner";
+
+                case "bleakisles:folken_isles_flower_forest", "bleakisles:folken_isles_aetlis_forest", "bleakisles:folken_isles_aetlis_swamp":
+                    return "folk_mainlander";
+
+                case "bleakisles:sandstone_basin_savannah", "bleakisles:sandstone_basin_desert", "bleakisles:sandstone_basin_jungle":
+                    return "folk_northern_ahrathi";
+
+
+                case "bleakisles:ahrathi_isles_badlands", "bleakisles:ahrathi_isles_desert", "bleakisles:ahrathi_isles_jungle_south", "bleakisles:ahrathi_isles_jungle_east":
+                    if (random_selection == 0){
+                        return "folk_southern_ahrathi";
+                    }
+                    else{
+                        return "elf_sand";
+                    }
+
+                case "bleakisles:blundercast_jungle":
+                    return "folk_murgish";
+
+                case "bleakisles:vingoria_dark_forest", "bleakisles:vingoria_jungle", "bleakisles:vingoria_ashland", "bleakisles:vingoria_plains":
+                    return "folk_ashen";
+
+                case "bleakisles:crimson_isles_mangrove_swamp", "bleakisles:crimson_isles_plains", "bleakisles:crimson_isles_forest":
+                    return "elf_crimson";
+
+
+                case "bleakisles:crimson_isles_jungle":
+                    return "orc_crimson";
+
+
+                case "bleakisles:eidlihas_wooded_badlands", "bleakisles:eidlihas_badlands":
+                    return "orc_mainlander";
+
+
+                case "bleakisles:eidlihas_birch_forest":
+                    if (random_selection == 0){
+                        return "elf_gray";
+                    }
+                    else{
+                        return "elf_sun";
+                    }
+
+
+                case "bleakisles:omn_sunflower_plains":
+                    return "elf_sea";
+
+
+                case "bleakisles:shattered_coasts_snowy_taiga_west", "bleakisles:shattered_coasts_snowy_plains", "bleakisles:shattered_coasts_snowy_taiga_east", "bleakisles:shattered_coasts_taiga_west", "bleakisles:shattered_coasts_taiga_east", "bleakisles:shattered_coasts_plains_north":
+                    return "elf_pale";
+
+
+                case "bleakisles:silver_isles_plains", "bleakisles:silver_isles_mushroom_fields", "bleakisles:silver_isles_forest":
+                    return "orc_silver";
+
+
+                case "bleakisles:eidlihas_plains":
+                    return "elf_sun";
+
+
+                default:
+                    if (random_selection == 0){
+                        return "folk_murgish";
+                    }
+                    else{
+                        return "elf_sea";
+                    }
+            }
     }
 
     /**
@@ -550,10 +702,6 @@ public class Genetics implements Iterable<Genetics.Gene> {
      */
     private float centeredRandom( Float centeredFloat ) {
         return Math.min(1, Math.max(0, (random.nextFloat() - 0.5F) * (random.nextFloat() - 0.5F) + centeredFloat));
-    }
-
-    private float temperatureBaseRandom(float temp) {
-        return (random.nextFloat() - 0.5F) * 0.35F + temp * 0.4F + 0.1F;
     }
 
     public void combine(Genetics mother, Genetics father) {

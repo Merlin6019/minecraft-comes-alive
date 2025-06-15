@@ -47,10 +47,12 @@ public interface VillagerLike<E extends Entity & VillagerLike<E>> extends CTrack
     CDataParameter<String> CUSTOM_SKIN = CParameter.create("custom_skin", "");
     CDataParameter<String> CLOTHES = CParameter.create("clothes", "");
     CDataParameter<String> HAIR = CParameter.create("hair", "");
+    CDataParameter<String> RACE = CParameter.create("race", "");
     CDataParameter<Float> HAIR_COLOR_RED = CParameter.create("hair_color_red", 0.0f);
     CDataParameter<Float> HAIR_COLOR_GREEN = CParameter.create("hair_color_green", 0.0f);
     CDataParameter<Float> HAIR_COLOR_BLUE = CParameter.create("hair_color_blue", 0.0f);
     CEnumParameter<AgeState> AGE_STATE = CParameter.create("ageState", AgeState.UNASSIGNED);
+
 
     UUID SPEED_ID = UUID.fromString("1eaf83ff-7207-5596-c37a-d7a07b3ec4ce");
 
@@ -227,6 +229,14 @@ public interface VillagerLike<E extends Entity & VillagerLike<E>> extends CTrack
 
     default void setHair(String hair) {
         setTrackedValue(HAIR, hair);
+    }
+
+    default String getRace() {
+        return getTrackedValue(RACE);
+    }
+
+    default void setRace(String race) {
+        setTrackedValue(RACE, race);
     }
 
     default void setHairDye(DyeColor color) {

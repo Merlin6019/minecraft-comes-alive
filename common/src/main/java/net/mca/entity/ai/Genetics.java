@@ -33,6 +33,10 @@ public class Genetics implements Iterable<Genetics.Gene> {
     public static final GeneType FACE = new GeneType("gene_face");
     public static final GeneType VOICE = new GeneType("gene_voice");
     public static final GeneType VOICE_TONE = new GeneType("gene_voice_tone");
+    public static final GeneType RACE = new GeneType("gene_race");
+
+    public int face_count = 22;
+    public int skin_count = 5;
 
     // MELANIN range for Bleak Isles Skin Tones (Y)
     // FOLK
@@ -166,6 +170,7 @@ public class Genetics implements Iterable<Genetics.Gene> {
 
     //initializes the genes with random numbers
     public void randomize() {
+
         for (GeneType type : GENOMES) {
             getGenome(type).randomize();
         }
@@ -191,13 +196,38 @@ public class Genetics implements Iterable<Genetics.Gene> {
             "orc_mainlander",
         };
 
+        int[] skinElfArray = {
+            1,
+            2,
+            3
+        };
+
+        int[] skinFolkArray = {
+            5,
+            6,
+            7,
+            8,
+            9
+        };
+
+        int[] skinOrcArray = {
+            0,
+            1,
+            2,
+            3,
+            4
+        };
+
         boolean hasHeterochromia = entity.getTraits().hasTrait(Traits.HETEROCHROMIA);
         Integer random_eye = MathHelper.nextInt(Random.create(), 0, 2);
 
         String race = "folk_murgish"; // Default fallback race
+        int skin = 3; // Default fallback skin
+        int randomSkinIndex = 0;
+        int raceIndex = 0;
 
         // Immigrant Race
-        if (random.nextFloat() < Config.getInstance().geneticImmigrantChance) {
+        if (random.nextFloat() < 0.01F) {
 
             int randomRaceIndex = random.nextInt(raceArray.length);
 
@@ -205,406 +235,472 @@ public class Genetics implements Iterable<Genetics.Gene> {
         }
         else{
             race = getRaceByBiome();
+            raceIndex = Arrays.asList(raceArray).indexOf(race);
         }
 
         switch(race){
             case "folk_northerner":
-
+            setGene(RACE, raceIndex);
             setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_northern_folk, melanin_max_northern_folk));
             setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
             setGene(SIZE, centeredRandom(0.5F));
             setGene(WIDTH, centeredRandom(0.4F));
 
+            randomSkinIndex = random.nextInt(skinFolkArray.length);
+            skin = skinFolkArray[randomSkinIndex];
+            setGene(SKIN, skin / skin_count);
+
             if (random_eye == 0){
-                setGene(FACE, 1); // Hazel
+                setGene(FACE, 1F / face_count); // Hazel
                 if (hasHeterochromia){
-                    setGene(FACE, 17); // Brown/Blind
+                    setGene(FACE, 17F / face_count); // Brown/Blind
                 }
             }
             else if (random_eye == 1){
-                setGene(FACE, 16); // Light Blue
+                setGene(FACE, 16F / face_count); // Light Blue
                 if (hasHeterochromia){
-                    setGene(FACE, 3); // Brown/Blue
+                    setGene(FACE, 3F / face_count); // Brown/Blue
                 }
             }
             else{
-                setGene(FACE, 3); // Light Green
+                setGene(FACE, 3F / face_count); // Light Green
                 if (hasHeterochromia){
-                    setGene(FACE, 1); // Blue/Green
+                    setGene(FACE, 1F / face_count); // Blue/Green
                 }
             }
             break;
 
             case "folk_mainlander":
-
+            setGene(RACE, raceIndex);
             setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_northern_folk, melanin_max_northern_folk));
             setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
             setGene(SIZE, centeredRandom(0.5F));
             setGene(WIDTH, centeredRandom(0.4F));
 
+            randomSkinIndex = random.nextInt(skinFolkArray.length);
+            skin = skinFolkArray[randomSkinIndex];
+            setGene(SKIN, skin / skin_count);
+
             if (random_eye == 0){
-                setGene(FACE, 1); // Hazel
+                setGene(FACE, 1F / face_count); // Hazel
                 if (hasHeterochromia){
-                    setGene(FACE, 17); // Brown/Blind
+                    setGene(FACE, 17F / face_count); // Brown/Blind
                 }
             }
             else if (random_eye == 1){
-                setGene(FACE, 16); // Light Blue
+                setGene(FACE, 16F / face_count); // Light Blue
                 if (hasHeterochromia){
-                    setGene(FACE, 3); // Brown/Blue
+                    setGene(FACE, 3F / face_count); // Brown/Blue
                 }
             }
             else{
-                setGene(FACE, 3); // Light Green
+                setGene(FACE, 3F / face_count); // Light Green
                 if (hasHeterochromia){
-                    setGene(FACE, 1); // Blue/Green
+                    setGene(FACE, 1F / face_count); // Blue/Green
                 }
             }
             break;
 
             case "folk_northern_ahrathi":
-
+            setGene(RACE, raceIndex);
             setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_sea_nomad, melanin_max_sea_nomad));
             setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
             setGene(SIZE, centeredRandom(0.6F));
             setGene(WIDTH, centeredRandom(0.5F));
 
+            randomSkinIndex = random.nextInt(skinFolkArray.length);
+            skin = skinFolkArray[randomSkinIndex];
+            setGene(SKIN, skin / skin_count);
+
             if (random_eye == 0){
-                setGene(FACE, 0); // Brown
+                setGene(FACE, 0F / face_count); // Brown
                 if (hasHeterochromia){
-                    setGene(FACE, 17); // Brown/Blind
+                    setGene(FACE, 17F / face_count); // Brown/Blind
                 }
             }
             else if (random_eye == 1){
-                setGene(FACE, 1); // Hazel
+                setGene(FACE, 1F / face_count); // Hazel
                 if (hasHeterochromia){
-                    setGene(FACE, 14); // Light Blue/Brown
+                    setGene(FACE, 14F / face_count); // Light Blue/Brown
                 }
             }
             else{
-                setGene(FACE, 11); // Gold
+                setGene(FACE, 11F / face_count); // Gold
                 if (hasHeterochromia){
-                    setGene(FACE, 7); // Gray/Gold
+                    setGene(FACE, 7F / face_count); // Gray/Gold
                 }
             }
             break;
 
             case "folk_southern_ahrathi":
-
+            setGene(RACE, raceIndex);
             setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_ahrathi, melanin_max_ahrathi));
             setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
             setGene(SIZE, centeredRandom(0.6F));
             setGene(WIDTH, centeredRandom(0.5F));
 
+            randomSkinIndex = random.nextInt(skinFolkArray.length);
+            skin = skinFolkArray[randomSkinIndex];
+            setGene(SKIN, skin / skin_count);
+
             if (random_eye == 0){
-                setGene(FACE, 0); // Brown
+                setGene(FACE, 0F / face_count); // Brown
                 if (hasHeterochromia){
-                    setGene(FACE, 17); // Brown/Blind
+                    setGene(FACE, 17F / face_count); // Brown/Blind
                 }
             }
             else if (random_eye == 1){
-                setGene(FACE, 1); // Hazel
+                setGene(FACE, 1F / face_count); // Hazel
                 if (hasHeterochromia){
-                    setGene(FACE, 14); // Light Blue/Brown
+                    setGene(FACE, 14F / face_count); // Light Blue/Brown
                 }
             }
             else{
-                setGene(FACE, 11); // Gold
+                setGene(FACE, 11F / face_count); // Gold
                 if (hasHeterochromia){
-                    setGene(FACE, 7); // Gray/Gold
+                    setGene(FACE, 7F / face_count); // Gray/Gold
                 }
             }
             break;
 
             case "folk_murgish":
-
+            setGene(RACE, raceIndex);
             setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_sea_nomad, melanin_max_sea_nomad));
             setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
             setGene(SIZE, centeredRandom(0.65F));
             setGene(WIDTH, centeredRandom(0.55F));
 
+            randomSkinIndex = random.nextInt(skinFolkArray.length);
+            skin = skinFolkArray[randomSkinIndex];
+            setGene(SKIN, skin / skin_count);
+
             if (random_eye == 0){
-                setGene(FACE, 0); // Brown
+                setGene(FACE, 0F / face_count); // Brown
                 if (hasHeterochromia){
-                    setGene(FACE, 17); // Brown/Blind
+                    setGene(FACE, 17F / face_count); // Brown/Blind
                 }
             }
             else if (random_eye == 1){
-                setGene(FACE, 3); // Light Green
+                setGene(FACE, 3F / face_count); // Light Green
                 if (hasHeterochromia){
-                    setGene(FACE, 2); // Light Green/Teal
+                    setGene(FACE, 2F / face_count); // Light Green/Teal
                 }
             }
             else{
-                setGene(FACE, 9); // Gray
+                setGene(FACE, 9F / face_count); // Gray
                 if (hasHeterochromia){
-                    setGene(FACE, 7); // Gray/Gold
+                    setGene(FACE, 7F / face_count); // Gray/Gold
                 }
             }
             break;
 
             case "folk_ashen":
-
+            setGene(RACE, raceIndex);
             setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_ashen, melanin_max_ashen));
             setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_yellow, hemoglobin_max_yellow));
             setGene(SIZE, centeredRandom(0.45F));
             setGene(WIDTH, centeredRandom(0.35F));
 
+            randomSkinIndex = random.nextInt(skinElfArray.length);
+            skin = skinElfArray[randomSkinIndex];
+            setGene(SKIN, skin / skin_count);
+
             if (random_eye == 0){
-                setGene(FACE, 9); // Gray
+                setGene(FACE, 9F / face_count); // Gray
                 if (hasHeterochromia){
-                    setGene(FACE, 9); // Purple/Gray
+                    setGene(FACE, 9F / face_count); // Purple/Gray
                 }
             }
             else if (random_eye == 1){
-                setGene(FACE, 6); // Red
+                setGene(FACE, 6F / face_count); // Red
                 if (hasHeterochromia){
-                    setGene(FACE, 13); // Salmon/Gray
+                    setGene(FACE, 13F / face_count); // Salmon/Gray
                 }
             }
             else{
-                setGene(FACE, 1); // Brown
+                setGene(FACE, 1F / face_count); // Brown
                 if (hasHeterochromia){
-                    setGene(FACE, 5); // Brown/Purple
+                    setGene(FACE, 5F / face_count); // Brown/Purple
                 }
             }
             break;
 
             case "elf_crimson":
-
+            setGene(RACE, raceIndex);
             setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_crimson_elf, melanin_max_crimson_elf));
             setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
             setGene(SIZE, centeredRandom(0.75F));
             setGene(WIDTH, centeredRandom(0.55F));
 
+            randomSkinIndex = random.nextInt(skinElfArray.length);
+            skin = skinElfArray[randomSkinIndex];
+            setGene(SKIN, skin / skin_count);
+
             if (random_eye == 0){
-                setGene(FACE, 6); // Red
+                setGene(FACE, 6F / face_count); // Red
                 if (hasHeterochromia){
-                    setGene(FACE, 4); // Red/Purple
+                    setGene(FACE, 4F / face_count); // Red/Purple
                 }
             }
             else if (random_eye == 1){
-                setGene(FACE, 8); // Purple
+                setGene(FACE, 8F / face_count); // Purple
                 if (hasHeterochromia){
-                    setGene(FACE, 4); // Red/Purple
+                    setGene(FACE, 4F / face_count); // Red/Purple
                 }
             }
             else{
-                setGene(FACE, 9); // Gray
+                setGene(FACE, 9F / face_count); // Gray
                 if (hasHeterochromia){
-                    setGene(FACE, 5); // Brown/Purple
+                    setGene(FACE, 5F / face_count); // Brown/Purple
                 }
             }
             break;
 
             case "elf_gray":
-
+            setGene(RACE, raceIndex);
             setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_gray_elf, melanin_max_gray_elf));
             setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
             setGene(SIZE, centeredRandom(0.77F));
             setGene(WIDTH, centeredRandom(0.57F));
 
+            randomSkinIndex = random.nextInt(skinElfArray.length);
+            skin = skinElfArray[randomSkinIndex];
+            setGene(SKIN, skin / skin_count);
+
             if (random_eye == 0){
-                setGene(FACE, 6); // Red
+                setGene(FACE, 6F / face_count); // Red
                 if (hasHeterochromia){
-                    setGene(FACE, 4); // Red/Purple
+                    setGene(FACE, 4F / face_count); // Red/Purple
                 }
             }
             else if (random_eye == 1){
-                setGene(FACE, 8); // Purple
+                setGene(FACE, 8F / face_count); // Purple
                 if (hasHeterochromia){
-                    setGene(FACE, 4); // Red/Purple
+                    setGene(FACE, 4F / face_count); // Red/Purple
                 }
             }
             else{
-                setGene(FACE, 9); // Gray
+                setGene(FACE, 9F / face_count); // Gray
                 if (hasHeterochromia){
-                    setGene(FACE, 5); // Brown/Purple
+                    setGene(FACE, 5F / face_count); // Brown/Purple
                 }
             }
             break;
 
             case "elf_sun":
-
+            setGene(RACE, raceIndex);
             setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_sun_elf, melanin_max_sun_elf));
             setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_yellow, hemoglobin_max_yellow));
             setGene(SIZE, centeredRandom(0.8F));
             setGene(WIDTH, centeredRandom(0.6F));
 
+            randomSkinIndex = random.nextInt(skinElfArray.length);
+            skin = skinElfArray[randomSkinIndex];
+            setGene(SKIN, skin / skin_count);
+
                 if (random_eye == 0){
-                    setGene(FACE, 11); // Gold
+                    setGene(FACE, 11F / face_count); // Gold
                     if (hasHeterochromia){
-                        setGene(FACE, 10); // Gold/Red
+                        setGene(FACE, 10F / face_count); // Gold/Red
                     }
                 }
                 else if (random_eye == 1){
-                    setGene(FACE, 2); // Blue
+                    setGene(FACE, 2F / face_count); // Blue
                     if (hasHeterochromia){
-                        setGene(FACE, 14); // Light Blue/Brown
+                        setGene(FACE, 14F / face_count); // Light Blue/Brown
                     }
                 }
                 else{
-                    setGene(FACE, 3); // Green
+                    setGene(FACE, 3F / face_count); // Green
                     if (hasHeterochromia){
-                        setGene(FACE, 2); // Teal/Light Green
+                        setGene(FACE, 2F / face_count); // Teal/Light Green
                     }
                 }
             break;
 
             case "elf_pale":
-
+            setGene(RACE, raceIndex);
             setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_pale_elf, melanin_max_pale_elf));
             setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_gray, hemoglobin_max_gray));
             setGene(SIZE, centeredRandom(0.75F));
             setGene(WIDTH, centeredRandom(0.55F));
 
+            randomSkinIndex = random.nextInt(skinElfArray.length);
+            skin = skinElfArray[randomSkinIndex];
+            setGene(SKIN, skin / skin_count);
+
             if (random_eye == 0){
-                setGene(FACE, 14); // Light pink
+                setGene(FACE, 14F / face_count); // Light pink
                 if (hasHeterochromia){
-                    setGene(FACE, 9); // Purple/Gray
+                    setGene(FACE, 9F / face_count); // Purple/Gray
                 }
             }
             else if (random_eye == 1){
-                setGene(FACE, 12); // Yellow
+                setGene(FACE, 12F / face_count); // Yellow
                 if (hasHeterochromia){
-                    setGene(FACE, 10); // Gold/Red
+                    setGene(FACE, 10F / face_count); // Gold/Red
                 }
             }
             else{
-                setGene(FACE, 16); // Light blue
+                setGene(FACE, 16F / face_count); // Light blue
                 if (hasHeterochromia){
-                    setGene(FACE, 13); // Salmon/Gray
+                    setGene(FACE, 13F / face_count); // Salmon/Gray
                 }
             }
             break;
 
             case "elf_sand":
-
+            setGene(RACE, raceIndex);
             setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_ahrathi, melanin_max_ahrathi));
             setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
             setGene(SIZE, centeredRandom(0.8F));
             setGene(WIDTH, centeredRandom(0.6F));
 
-                if (random_eye == 0){
-                    setGene(FACE, 11); // Gold
-                    if (hasHeterochromia){
-                        setGene(FACE, 10); // Gold/Red
-                    }
+            randomSkinIndex = random.nextInt(skinElfArray.length);
+            skin = skinElfArray[randomSkinIndex];
+            setGene(SKIN, skin / skin_count);
+
+            if (random_eye == 0){
+                setGene(FACE, 11F / face_count); // Gold
+                if (hasHeterochromia){
+                    setGene(FACE, 10F / face_count); // Gold/Red
                 }
-                else if (random_eye == 1){
-                    setGene(FACE, 2); // Blue
-                    if (hasHeterochromia){
-                        setGene(FACE, 14); // Light Blue/Brown
-                    }
+            }
+            else if (random_eye == 1){
+                setGene(FACE, 2F / face_count); // Blue
+                if (hasHeterochromia){
+                    setGene(FACE, 14F / face_count); // Light Blue/Brown
                 }
-                else{
-                    setGene(FACE, 3); // Green
-                    if (hasHeterochromia){
-                        setGene(FACE, 2); // Teal/Light Green
-                    }
+            }
+            else{
+                setGene(FACE, 3F / face_count); // Green
+                if (hasHeterochromia){
+                    setGene(FACE, 2F / face_count); // Teal/Light Green
                 }
+            }
             break;
 
             case "elf_sea":
-
+            setGene(RACE, raceIndex);
             setGene(MELANIN, melanin_sea_elf);
             setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_blue, hemoglobin_max_blue));
             setGene(SIZE, centeredRandom(0.85F));
             setGene(WIDTH, centeredRandom(0.65F));
 
-            setGene(FACE, 10); // Blind
+            randomSkinIndex = random.nextInt(skinElfArray.length);
+            skin = skinElfArray[randomSkinIndex];
+            setGene(SKIN, skin / skin_count);
+
+            setGene(FACE, 10F / face_count); // Blind
             break;
 
             case "orc_silver":
-
+            setGene(RACE, raceIndex);
             setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_silver_orc, melanin_max_silver_orc));
             setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_blue, hemoglobin_max_blue));
             setGene(SIZE, centeredRandom(0.87F));
             setGene(WIDTH, centeredRandom(0.97F));
 
+            randomSkinIndex = random.nextInt(skinOrcArray.length);
+            skin = skinOrcArray[randomSkinIndex];
+            setGene(SKIN, skin / skin_count);
+
             if (random_eye == 0){
-                setGene(FACE, 17); // Red
+                setGene(FACE, 17F / face_count); // Red
                 if (hasHeterochromia){
-                    setGene(FACE, 18); // Red/Blind
+                    setGene(FACE, 18F / face_count); // Red/Blind
                 }
             }
             else if (random_eye == 1){
-                setGene(FACE, 19); // Blue
+                setGene(FACE, 19F / face_count); // Blue
                 if (hasHeterochromia){
-                    setGene(FACE, 21); // Blue/Green
+                    setGene(FACE, 21F / face_count); // Blue/Green
                 }
             }
             else{
-                setGene(FACE, 18); // Green
+                setGene(FACE, 18F / face_count); // Green
                 if (hasHeterochromia){
-                    setGene(FACE, 20); // Brown/Blind
+                    setGene(FACE, 20F / face_count); // Brown/Blind
                 }
             }
             break;
 
             case "orc_crimson":
-
+            setGene(RACE, raceIndex);
             setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_crimson_orc, melanin_max_crimson_orc));
             setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_pinkRed, hemoglobin_max_pinkRed));
             setGene(SIZE, centeredRandom(0.85F));
             setGene(WIDTH, centeredRandom(95F));
 
-            setGene(FACE, 17); // Red Orc
+            randomSkinIndex = random.nextInt(skinOrcArray.length);
+            skin = skinOrcArray[randomSkinIndex];
+            setGene(SKIN, skin / skin_count);
+
+            setGene(FACE, 17F / face_count); // Red Orc
             if (hasHeterochromia){
-                setGene(FACE, 18); // Blind/Red Orc
+                setGene(FACE, 18F / face_count); // Blind/Red Orc
             }
             break;
 
             case "orc_mainlander":
-
+            setGene(RACE, raceIndex);
             setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_elder_orc, melanin_max_elder_orc));
             setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_green, hemoglobin_max_green));
             setGene(SIZE, centeredRandom(0.9F));
             setGene(WIDTH, centeredRandom(1F));
 
+            randomSkinIndex = random.nextInt(skinOrcArray.length);
+            skin = skinOrcArray[randomSkinIndex];
+            setGene(SKIN, skin / skin_count);
+
             if (random_eye == 0){
-                setGene(FACE, 17); // Red
+                setGene(FACE, 17F / face_count); // Red
                 if (hasHeterochromia){
-                    setGene(FACE, 18); // Red/Blind
+                    setGene(FACE, 18F / face_count); // Red/Blind
                 }
             }
             else if (random_eye == 1){
-                setGene(FACE, 19); // Blue
+                setGene(FACE, 19F / face_count); // Blue
                 if (hasHeterochromia){
-                    setGene(FACE, 21); // Blue/Green
+                    setGene(FACE, 21F / face_count); // Blue/Green
                 }
             }
             else{
-                setGene(FACE, 20); // Green
+                setGene(FACE, 20F / face_count); // Green
                 if (hasHeterochromia){
-                    setGene(FACE, 19); // Red/Green
+                    setGene(FACE, 19F / face_count); // Red/Green
                 }
             }
             break;
 
             default:
             // Murgish by default
+            setGene(RACE, 4);
             setGene(MELANIN, MathHelper.nextFloat(random, melanin_min_sea_nomad, melanin_max_sea_nomad));
             setGene(HEMOGLOBIN, MathHelper.nextFloat(random, hemoglobin_min_human, hemoglobin_max_human));
             setGene(SIZE, centeredRandom(0.65F));
             setGene(WIDTH, centeredRandom(0.55F));
 
+            randomSkinIndex = random.nextInt(skinFolkArray.length);
+            skin = skinFolkArray[randomSkinIndex];
+            setGene(SKIN, skin / skin_count);
+
             if (random_eye == 0){
-                setGene(FACE, 0); // Brown
+                setGene(FACE, 0F / face_count); // Brown
                 if (hasHeterochromia){
-                    setGene(FACE, 17); // Brown/Blind
+                    setGene(FACE, 17F / face_count); // Brown/Blind
                 }
             }
             else if (random_eye == 1){
-                setGene(FACE, 3); // Light Green
+                setGene(FACE, 3F / face_count); // Light Green
                 if (hasHeterochromia){
-                    setGene(FACE, 2); // Light Green/Teal
+                    setGene(FACE, 2F / face_count); // Light Green/Teal
                 }
             }
             else{
-                setGene(FACE, 9); // Gray
+                setGene(FACE, 9F / face_count); // Gray
                 if (hasHeterochromia){
-                    setGene(FACE, 7); // Gray/Gold
+                    setGene(FACE, 7F / face_count); // Gray/Gold
                 }
             }
             break;

@@ -231,14 +231,6 @@ public interface VillagerLike<E extends Entity & VillagerLike<E>> extends CTrack
         setTrackedValue(HAIR, hair);
     }
 
-    default String getRace() {
-        return getTrackedValue(RACE);
-    }
-
-    default void setRace(String race) {
-        setTrackedValue(RACE, race);
-    }
-
     default void setHairDye(DyeColor color) {
         float[] components = color.getColorComponents().clone();
 

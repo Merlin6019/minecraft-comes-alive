@@ -3,6 +3,7 @@ package net.mca.resources;
 import com.google.gson.JsonElement;
 import net.mca.MCA;
 import net.mca.entity.VillagerLike;
+import net.mca.entity.ai.Genetics;
 import net.mca.entity.ai.relationship.Gender;
 import net.minecraft.entity.Entity;
 import net.minecraft.registry.RegistryKeys;
@@ -15,6 +16,8 @@ import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.biome.Biome;
 
 import org.jetbrains.annotations.NotNull;
+
+import static net.mca.client.model.CommonVillagerModel.getVillager;
 
 import java.util.*;
 
@@ -52,9 +55,38 @@ public class Names extends JsonDataLoader {
     static final Random random = Random.create();
 
     public static String getCitizenNation(Entity entity) {
-        String race = getRaceByBiome(entity);
         
-        return race;
+        String[] raceArray = {
+            // Folk
+            "folk_northerner",
+            "folk_mainlander",
+            "folk_northern_ahrathi",
+            "folk_southern_ahrathi",
+            "folk_murgish",
+            "folk_ashen",
+            // Elves
+            "elf_crimson",
+            "elf_gray",
+            "elf_sun",
+            "elf_sand",
+            "elf_pale",
+            "elf_sea",
+            // Orcs
+            "orc_silver",
+            "orc_crimson",
+            "orc_mainlander",
+        };
+
+        int raceIndex = (int) getVillager(entity).getGenetics().getGene(Genetics.RACE);
+        String race = raceArray[raceIndex];
+
+        if (race != null){
+            return race;
+        }
+        else{
+            return "sun_elf";   
+        }
+
     }
 
     public static String pickCitizenName(@NotNull Gender gender, Entity entity) {
@@ -63,88 +95,5 @@ public class Names extends JsonDataLoader {
 
     public static String pickCitizenName(@NotNull Gender gender) {
         return NAMES_MAP.isEmpty() ? "Unnamed" : NAMES_MAP.get(REGION_NAMES.get(random.nextInt(REGION_NAMES.size()))).get(gender.binary()).pickOne();
-    }
-
-    private static String getRaceByBiome(Entity entity){
-        Biome biome = entity.getWorld().getBiome(entity.getBlockPos()).value();
-
-        Identifier biomeId = entity.getWorld().getRegistryManager()
-        .get(RegistryKeys.BIOME)
-        .getId(biome);
-
-        String biomeName = biomeId != null ? biomeId.toString() : "unknown";
-
-        Integer random_selection = MathHelper.nextBetween(Random.create(), 0, 1);
-        
-        switch (biomeName) {
-            case "bleakisles:folken_isles_orbeitor_taiga", "bleakisles:folken_isles_ithlaer_taiga", "bleakisles:folken_isles_ithlaer_dark_forest", "bleakisles:folken_isles_orbeitor_snowy_taiga", "bleakisles:folken_isles_ithlaer_snowy_taiga", "bleakisles:folken_isles_naranir_dark_forest":
-                return "folk_northerner";
-
-            case "bleakisles:folken_isles_flower_forest", "bleakisles:folken_isles_aetlis_forest", "bleakisles:folken_isles_aetlis_swamp":
-                return "folk_mainlander";
-
-            case "bleakisles:sandstone_basin_savannah", "bleakisles:sandstone_basin_desert", "bleakisles:sandstone_basin_jungle":
-                return "folk_northern_ahrathi";
-
-
-            case "bleakisles:ahrathi_isles_badlands", "bleakisles:ahrathi_isles_desert", "bleakisles:ahrathi_isles_jungle_south", "bleakisles:ahrathi_isles_jungle_east":
-                if (random_selection == 0){
-                    return "folk_southern_ahrathi";
-                }
-                else{
-                    return "elf_sand";
-                }
-
-            case "bleakisles:blundercast_jungle":
-                return "folk_murgish";
-
-            case "bleakisles:vingoria_dark_forest", "bleakisles:vingoria_jungle", "bleakisles:vingoria_ashland", "bleakisles:vingoria_plains":
-                return "folk_ashen";
-
-            case "bleakisles:crimson_isles_mangrove_swamp", "bleakisles:crimson_isles_plains", "bleakisles:crimson_isles_forest":
-                return "elf_crimson";
-
-
-            case "bleakisles:crimson_isles_jungle":
-                return "orc_crimson";
-
-
-            case "bleakisles:eidlihas_wooded_badlands", "bleakisles:eidlihas_badlands":
-                return "orc_mainlander";
-
-
-            case "bleakisles:eidlihas_birch_forest":
-                if (random_selection == 0){
-                    return "elf_gray";
-                }
-                else{
-                    return "elf_sun";
-                }
-
-
-            case "bleakisles:omn_sunflower_plains":
-                return "elf_sea";
-
-
-            case "bleakisles:shattered_coasts_snowy_taiga_west", "bleakisles:shattered_coasts_snowy_plains", "bleakisles:shattered_coasts_snowy_taiga_east", "bleakisles:shattered_coasts_taiga_west", "bleakisles:shattered_coasts_taiga_east", "bleakisles:shattered_coasts_plains_north":
-                return "elf_pale";
-
-
-            case "bleakisles:silver_isles_plains", "bleakisles:silver_isles_mushroom_fields", "bleakisles:silver_isles_forest":
-                return "orc_silver";
-
-
-            case "bleakisles:eidlihas_plains":
-                return "elf_sun";
-
-
-            default:
-                if (random_selection == 0){
-                    return "folk_murgish";
-                }
-                else{
-                    return "elf_sea";
-                }
-        }
     }
 }

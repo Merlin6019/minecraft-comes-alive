@@ -10,6 +10,7 @@ import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 
 public class FaceLayer<T extends LivingEntity, M extends BipedEntityModel<T>> extends VillagerLayer<T, M> {
     private static final int FACE_COUNT = 22;
@@ -36,7 +37,7 @@ public class FaceLayer<T extends LivingEntity, M extends BipedEntityModel<T>> ex
 
     @Override
     public Identifier getSkin(T villager) {
-        int index = Math.round(CommonVillagerModel.getVillager(villager).getGenetics().getGene(Genetics.FACE));
+        int index = Math.round(CommonVillagerModel.getVillager(villager).getGenetics().getGene(Genetics.FACE) * FACE_COUNT);
         int time = villager.age / 2 + (int) (CommonVillagerModel.getVillager(villager).getGenetics().getGene(Genetics.HEMOGLOBIN) * 65536);
         boolean blink = time % 50 == 1 || time % 57 == 1 || villager.isSleeping() || villager.isDead();
         boolean hasHeterochromia = variant.equals("normal") && CommonVillagerModel.getVillager(villager).getTraits().hasTrait(Traits.HETEROCHROMIA);
